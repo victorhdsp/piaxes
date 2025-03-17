@@ -1,9 +1,11 @@
+import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import sharp from "sharp";
 
 const imageTypes = RegExp(/\.(png|jpe?g)$/i);
-const piaxes_alt_path = path.resolve('../../piaxes_alt.js');
+const piaxes_alt_path = path.resolve('./piaxes_alt.js');
+const server_path = path.resolve(import.meta.dirname, './index.js');
 
 function searchImagesInDirRecursive(dir) {
   const files = fs.readdirSync(dir);
@@ -27,6 +29,14 @@ export default function PiaxesVite() {
       const piaxes_alt = {};
       if (!fs.existsSync(piaxes_alt_path))
         fs.writeFileSync(piaxes_alt_path, `export default ${JSON.stringify(piaxes_alt, null, 2)};`);
+      exec(`node ${server_path}`, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
+      });
     },
     async closeBundle() {
       // eslint-disable-next-line no-async-promise-executor

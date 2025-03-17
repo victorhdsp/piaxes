@@ -1,6 +1,6 @@
 {
   "name": "piaxes",
-  "version": "1.0.0-1",
+  "version": "1.0.0-2",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -9,7 +9,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "sharp": "^0.33.5",
-    "react": "^19.0.0"
+    "@google/generative-ai": "^0.24.0",
+    "dotenv": "^16.4.7",
+    "react": "^19.0.0",
+    "sharp": "^0.33.5"
   }
 }

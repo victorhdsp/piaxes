@@ -1,8 +1,12 @@
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
+import translate from './translate.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const piaxes_alt_path = path.resolve('../../piaxes_alt.js');
+const piaxes_alt_path = path.resolve('./piaxes_alt.js');
+const public_path = path.resolve('./public');
 
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -26,10 +30,13 @@ const server = http.createServer((req, res) => {
       const piaxes_alt = (await import(dynamicImportPath)).default;
 
       const imageName = body;
-      const alt = "1234567";
+      const alt = await translate(path.join(public_path, imageName)) || null;
+      if (!alt) {
+        res.end('erro ao carregar alt');
+        return;
+      }
       piaxes_alt[imageName] = alt;
       fs.writeFileSync(piaxes_alt_path, `export default ${JSON.stringify(piaxes_alt, null, 2)};`);
-
       res.end(alt);
     });
   } else {
@@ -39,5 +46,4 @@ const server = http.createServer((req, res) => {
 
 server.listen(4334, () => {
   console.log('Servidor iniciado na porta 4334');
-  console.log(piaxes_alt_path);
 });
